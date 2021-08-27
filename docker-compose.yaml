@@ -5,18 +5,53 @@ services:
   web:
     labels:
       shipyard.route: '/'
-      shipyard.init: 'poetry run flask db upgrade'
     build: '.'
     environment:
       DATABASE_URL: 'postgres://obscure-user:obscure-password@postgres/app'
       DEV: ${DEV}
       FLASK_DEBUG: '1'
     volumes:
-      - './filesystem/entrypoints:/entrypoints:ro'
+      # - './filesystem/entrypoints:/entrypoints:ro'
+      - type: volume
+        source: ./filesystem/entrypoints
+        target: /entrypoints
+        read_only: true
       - './migrations:/srv/migrations'
+#       - type: volume
+#         source: ./migrations
+#         target: /srv/migrations
       - './src:/srv/src:ro'
+#       - type: volume
+#         source: ./src
+#         target: /srv/src
+#         read_only: true
     ports:
       - '8080:8080'
+
+  worker:
+    labels:
+      shipyard.before: 'poetry run flask db upgrade'
+    build: '.'
+    environment:
+      DATABASE_URL: 'postgres://obscure-user:obscure-password@postgres/app'
+      DEV: ${DEV}
+      FLASK_DEBUG: '1'
+    command: '/entrypoints/worker.sh'
+    volumes:
+      # - './filesystem/entrypoints:/entrypoints:ro'
+      - type: volume
+        source: ./filesystem/entrypoints
+        target: /entrypoints
+        read_only: true
+      - './migrations:/srv/migrations'
+#       - type: volume
+#         source: ./migrations
+#         target: /srv/migrations
+      - './src:/srv/src:ro'
+#       - type: volume
+#         source: ./src
+#         target: /srv/src
+#         read_only: true
 
   postgres:
     image: 'postgres:9.6-alpine'
@@ -27,8 +62,16 @@ services:
       PGDATA: '/var/lib/postgresql/data/pgdata'
     volumes:
       - 'postgres:/var/lib/postgresql/data'
+#       - type: volume
+#         source: postgres
+#         target: /var/lib/postgresql/data
     ports:
       - '5432'
+
+  redis:
+    image: 'redis:5.0-alpine'
+    ports:
+      - '6379'
 
 volumes:
   postgres:
