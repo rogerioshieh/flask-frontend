@@ -33,7 +33,7 @@ services:
       shipyard.before: 'poetry run flask db upgrade'
     build: '.'
     environment:
-      DATABASE_URL: 'postgres://obscure-user:obscure-password@postgres/app'
+      DATABASE_URL: '$POSTGRES://obscure-user:obscure-password@postgres/app'
       DEV: ${DEV}
       FLASK_DEBUG: '1'
     command: '/entrypoints/worker.sh'
@@ -54,7 +54,7 @@ services:
 #         read_only: true
 
   postgres:
-    image: '$POSTGRES:9.6-alpine'
+    image: 'postgres:9.6-alpine'
     environment:
       POSTGRES_USER: 'obscure-user'
       POSTGRES_PASSWORD: 'obscure-password'
