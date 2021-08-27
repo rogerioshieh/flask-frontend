@@ -7,7 +7,7 @@ services:
       shipyard.route: '/'
     build: '.'
     environment:
-      DATABASE_URL: 'postgres://obscure-user:obscure-password@postgres/app'
+      DATABASE_URL: '${POSTGRES}://obscure-user:obscure-password@postgres/app'
       DEV: ${DEV}
       FLASK_DEBUG: '1'
     volumes:
@@ -26,7 +26,7 @@ services:
 #         target: /srv/src
 #         read_only: true
     ports:
-      - '8080:8080'
+      - ${PORT:-8081}:${PORT:-8081}
 
   worker:
     labels:
@@ -54,7 +54,7 @@ services:
 #         read_only: true
 
   postgres:
-    image: 'postgres:9.6-alpine'
+    image: '$POSTGRES:9.6-alpine'
     environment:
       POSTGRES_USER: 'obscure-user'
       POSTGRES_PASSWORD: 'obscure-password'
@@ -71,7 +71,7 @@ services:
   redis:
     image: 'redis:5.0-alpine'
     ports:
-      - '6379'
+      - '${REDIS_PORT:-6379}'
 
 volumes:
   postgres:
