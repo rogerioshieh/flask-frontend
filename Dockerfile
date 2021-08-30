@@ -57,4 +57,5 @@ ADD filesystem /
 
 # Set the default command
 ENV FLASK_APP src/entry:flask_app
+CMD ["sleep", "600"]
 CMD /entrypoints/web.sh
