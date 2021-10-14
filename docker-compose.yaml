@@ -1,34 +1,30 @@
 version: '3'
-
 services:
-
   web:
     labels:
-      shipyard.route: '/'
-      shipyard.init: 'poetry run flask db upgrade'
-    build: '.'
+      shipyard.route: /another-one
+      shipyard.init: poetry run flask db upgrade
+    build: .
     environment:
-      DATABASE_URL: 'postgres://obscure-user:obscure-password@postgres/app'
+      DATABASE_URL: postgres://obscure-user:obscure-password@postgres/app
       DEV: ${DEV}
       FLASK_DEBUG: '1'
     volumes:
-      - './filesystem/entrypoints:/entrypoints:ro'
-      - './migrations:/srv/migrations'
-      - './src:/srv/src:ro'
+    - ./filesystem/entrypoints:/entrypoints:ro
+    - ./migrations:/srv/migrations
+    - ./src:/srv/src:ro
     ports:
-      - '8080:8080'
-
+    - 8080:8080
   postgres:
-    image: 'postgres:9.6-alpine'
+    image: postgres:9.6-alpine
     environment:
-      POSTGRES_USER: 'obscure-user'
-      POSTGRES_PASSWORD: 'obscure-password'
-      POSTGRES_DB: 'app'
-      PGDATA: '/var/lib/postgresql/data/pgdata'
+      POSTGRES_USER: obscure-user
+      POSTGRES_PASSWORD: obscure-password
+      POSTGRES_DB: app
+      PGDATA: /var/lib/postgresql/data/pgdata
     volumes:
-      - 'postgres:/var/lib/postgresql/data'
+    - postgres:/var/lib/postgresql/data
     ports:
-      - '5432'
-
+    - '5432'
 volumes:
   postgres:
