@@ -2,7 +2,7 @@ version: '3'
 services:
   web:
     labels:
-      shipyard.route: /a-custom-one2
+      shipyard.route: /a-custom-one3
       shipyard.init: poetry run flask db upgrade
     build: .
     environment:
